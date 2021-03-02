@@ -1,19 +1,77 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="utf-8"/>
+</head>
+
 <body>
 
 <canvas id="myCanvas" width="600" height="480"
-style="border:1px solid #d3d3d3;">
+style="border:1px solid #00d3d3;">
 Your browser does not support the canvas element.
 </canvas>
 
 <script>
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
-ctx.beginPath();
-ctx.arc(300,50,25,0,2*Math.PI);
-ctx.stroke();
+//ctx.beginPath();
+//ctx.arc(0,0,25,0,2*Math.PI);
+//ctx.stroke();
 
+var startPoint = {
+	x: 300,
+	y: 50
+};
+var endPoint = {
+	x: 300,
+	y: 50
+};
+
+var step = 50;
+
+drawCircle();
+//drawWheel(startPoint,endPoint,step);
+function drawWheel(startPoint, endPoint, step){
+	console.log(startPoint.x);
+	console.log(endPoint.y);
+	console.log(step);
+
+	var x = startPoint.x;
+	var y = startPoint.y;
+	var inc = 0;
+	for(var i = 0; i < step; i++){
+		ctx.beginPath();
+		ctx.arc(x + inc,y + inc,25,0,2*Math.PI);
+		ctx.stroke();
+		inc += (2 * Math.PI ) / step;
+	}
+
+}
+
+function drawCircle(){
+	var startX = 300;
+	var startY = 240;
+
+	var xC = canvas.width / 2;
+	console.log('cool' + xC	)
+	var yC = canvas.height / 2;
+	var start = 0;
+	var end = 2*Math.PI;
+	var step = 0.01;
+	var inc = 50;
+	ctx.moveTo(600, 240);
+	for(var i = 0; i < end; i+=step){
+		var stepX = startX * Math.cos(i);
+		var stepY = startY * Math.sin(i);
+		console.log('x: ' + (stepX + xC) + ' y: ' + (stepY + yC))
+		ctx.lineTo(stepX + xC, stepY + yC);
+		ctx.stroke();
+		//startX += xC;
+		//startY += yC;
+
+	}
+	console.log('x: ' + startX + ' y: ' + startY)
+}
 
 
 </script> 
