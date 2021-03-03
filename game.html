@@ -6,17 +6,32 @@
 
 <body>
 
-<canvas id="myCanvas" width="600" height="480"
-style="border:1px solid #00d3d3;">
+<canvas id="myCanvas" width="600" height="600"
+style="border:1px solid #00d3d3; display: none">
 Your browser does not support the canvas element.
 </canvas>
-
+<!-- remember to use css styles-->
+<canvas id="back" width="600" height="600"
+style="border:1px solid #00d3d3"></canvas>
+<canvas id="greenCircle" width="18" height="18"
+style="display: none"></canvas>
+<button id="stopButton" onclick="toggleWheel()">STOP</button>
 <script>
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
-//ctx.beginPath();
-//ctx.arc(0,0,25,0,2*Math.PI);
-//ctx.stroke();
+var circles = [];
+var gC = document.getElementById("greenCircle");
+var gCTX = gC.getContext("2d");
+var fps, fpsInterval, startTime, now, then, elapsed;
+var stopTime;
+var stop = false;
+
+var reqID;
+gCTX.beginPath();
+gCTX.arc(9,9,8,0,2*Math.PI);
+gCTX.fillStyle = "#80ff80";
+	gCTX.stroke();
+	gCTX.fill()
 
 var startPoint = {
 	x: 300,
@@ -28,13 +43,147 @@ var endPoint = {
 };
 
 var step = 50;
+var xC = canvas.width / 2;
+	//console.log('cool' + xC	)
+	var yC = canvas.height / 2;
+//drawCircle(0,0,2*Math.PI,xC,yC,0.1,220);
+	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,200);
+	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,250);
+	var circle_i = 0;
+init();
 
-drawCircle();
+function init(){
+	var xC = canvas.width / 2;
+	//console.log('cool' + xC	)
+	var yC = canvas.height / 2;
+
+	drawCircle(0,0,2*Math.PI,xC,yC,0.1,220);
+	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,200);
+	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,240);
+	//ctx.save();
+	startAnimating(20);
+	//window.requestAnimationFrame(draw);
+}
+
+function toggleWheel(){
+	var stopButton = document.getElementById('stopButton')
+	if(stop){
+		stop = false;
+		reqID = requestAnimationFrame(draw);
+		stopButton.innerHTML = "STOP"
+		stopTime = null;
+	}
+	else{
+		stop = true;
+		stopTime = Date.now();
+		//fpsInterval = 1000 / ;
+		stopButton.innerHTML = "PLAY"
+	}
+	//cancelAnimationFrame(reqID);
+}
+//drawTheBloddoyCircle(0,0,0);
+function drawTheBloddoyCircle(x,y,colour){
+	var c = null;
+	for(var i = 0; i < circles.length; i++){
+		c = circles[i];
+		ctx.beginPath();
+		ctx.arc(c.x, c.y,c.r, 0, 2* Math.PI)
+		ctx.fillStyle = "#000000";
+		ctx.stroke();
+		ctx.fill();
+	}
+}
+
+function thing(ctx,time){
+	//ctx.rotate(( Math.PI) * (time.getSeconds() / 60) + 100)
+	//ctx.rotate((((5 * Math.PI) / 	60000) * time.getMilliseconds()));
+	//ctx.rotate((Math.PI * 2) * (time.getSeconds() / 60))
+	ctx.rotate(18 / 180)
+
+}
+
+function animate(){
+	// need to throttle, too fast otherwise
+
+}
+
+function startAnimating(fps) {
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
+    draw();
+
+}
+function draw()
+{
+
+
+	reqID = window.requestAnimationFrame(draw);
+
+	//animatctx.clearRect(0, 0, 300, 300); // clear canvaseCircle(0,0);
+	var cool = document.getElementById('back').getContext('2d');
+
+
+	cool.globalCompositeOperation = 'destination-over';
+
+	now = Date.now();
+	if(stopTime != null && now >= stopTime + 300)
+	{
+		//console.log(now); 
+		cancelAnimationFrame(reqID);
+	}
+	elapsed = now - then;
+	if(elapsed > fpsInterval)
+	{
+		then = now - (elapsed % fpsInterval);
+		cool.clearRect(0, 0, 600, 600); // clear canvas
+	  	//cool.fillStyle = 'rgba(0, 0, 0, 0.4)';
+	  	//cool.strokeStyle = 'rgba(0, 153, 255, 0.4)';
+	  	cool.save();
+	  	//cool.clearRect(0, 0, 1000, 900); // clear canvas
+	  	var time = new Date();
+	  	
+	  	cool.translate(circles[circle_i].x, circles[circle_i].y);
+		
+	  	// Earth
+
+	  	
+	  	//thing(cool,time);
+
+	  	//f fucking awful code
+	  	// why the hell is the formula written like this? thats such an awful way of presenting the concept, and thanks for the comments explaining it, mozilla.
+	  //	cool.rotate(((5 * Math.PI) / 60) * time.getSeconds() + ((5 * Math.PI) / 	60000) * time.getMilliseconds());	
+	  	//cool.rotate((3 * Math.PI) / 60);
+  	//cool.translate(230, 0);	
+  	//cool.fillRect(0, -12, 40, 24); // Shadow
+  	//cool.translate(0, 0);
+  		cool.drawImage(gC, -9, -9);
+  		cool.restore();
+
+  		cool.drawImage(canvas, 0,0,600,600)
+  		if(circle_i + 1 == circles.length)
+  		{
+  			circle_i = 0;
+  		}
+  		else
+  		{
+  			circle_i++;
+  		}
+	}
+}
+
+function moveCircle(){
+	 var time = new Date();
+  ctx.rotate(((2 * Math.PI) / 60) * time.getSeconds() + ((2 * Math.PI) / 60000) * time.getMilliseconds());
+  //ctx.translate(105, 0);
+  //ctx.fillRect(0, -12, 40, 24); // Shadow
+  //ctx.drawImage(earth, -12, -12);
+}
 //drawWheel(startPoint,endPoint,step);
 function drawWheel(startPoint, endPoint, step){
-	console.log(startPoint.x);
-	console.log(endPoint.y);
-	console.log(step);
+	//console.log(startPoint.x);
+	//console.log(endPoint.y);
+	//console.log(step);
 
 	var x = startPoint.x;
 	var y = startPoint.y;
@@ -46,33 +195,75 @@ function drawWheel(startPoint, endPoint, step){
 		inc += (2 * Math.PI ) / step;
 	}
 
-}
+} 
 
-function drawCircle(){
-	var startX = 300;
-	var startY = 240;
-
-	var xC = canvas.width / 2;
-	console.log('cool' + xC	)
-	var yC = canvas.height / 2;
-	var start = 0;
-	var end = 2*Math.PI;
-	var step = 0.01;
-	var inc = 50;
-	ctx.moveTo(600, 240);
+function drawCircle(startX, startY,end, xC, yC, step, inc){
+	
+	ctx.strokeStyle = "#000000"
 	for(var i = 0; i < end; i+=step){
-		var stepX = startX * Math.cos(i);
-		var stepY = startY * Math.sin(i);
-		console.log('x: ' + (stepX + xC) + ' y: ' + (stepY + yC))
-		ctx.lineTo(stepX + xC, stepY + yC);
-		ctx.stroke();
-		//startX += xC;
-		//startY += yC;
-
+		var stepX = (startX + inc) * Math.cos(i);
+		var stepY = (startY + inc) * Math.sin(i);
+		var colour = "";
+	//	console.log('x: ' + (stepX + xC) + ' y: ' + (stepY + yC))
+		if(i < Math.PI && i > Math.PI / 2){
+			
+			colour = "#00cc00"
+		//console.log("red??")
+		}
+		else {
+			colour = "#ff0000"
+			//console.log("green???")
+		}
+		drawCircleRow(stepX + xC, stepY + yC,colour);
 	}
-	console.log('x: ' + startX + ' y: ' + startY)
 }
 
+function drawCircleRow(x,y,colour){
+	ctx.beginPath();
+	ctx.arc(x,y,8,0, 2*Math.PI);
+	//console.log('step is: ' + step)
+	
+	ctx.fillStyle = colour;
+	ctx.stroke();
+	ctx.fill()
+	var circle = {
+		x: x,
+		y: y,
+		r: 8,
+		colour: colour
+	};
+	circles.push(circle);
+	//console.log(circle);
+}
+
+function animateCircle(x,y){
+	ctx.strokeStyle = "#000000"
+	var xC = canvas.width / 2;
+	//console.log('cool' + xC	)
+	var yC = canvas.height / 2;
+	for(var i = 0; i < 2*Math.PI; i+=0.01){
+		var stepX = (x + 220) * Math.cos(i);
+		var stepY = (y + 220) * Math.sin(i);
+		var colour = "";
+	//	console.log('x: ' + (stepX + xC) + ' y: ' + (stepY + yC))
+		if(i < Math.PI && i > Math.PI / 2){
+			colour = "#ff8080"
+		//console.log("red??")
+		}
+		else {
+			colour = "#80ff80"
+			//console.log("green???")
+		}
+		ctx.beginPath();
+		ctx.arc(stepX + xC,stepY + yC,10,0, 2*Math.PI);
+		//console.log('step is: ' + step)
+		
+		ctx.fillStyle = colour;
+		ctx.stroke();
+		ctx.fill()
+		//drawCircleRow(stepX + xC, stepY + yC,colour);
+	}
+}
 
 </script> 
 
