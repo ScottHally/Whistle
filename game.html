@@ -16,15 +16,20 @@ style="border:1px solid #00d3d3"></canvas>
 <canvas id="greenCircle" width="18" height="18"
 style="display: none"></canvas>
 <button id="stopButton" onclick="toggleWheel()">STOP</button>
+<button id="testWin" onclick="stopToWin()">TEST</button>
 <script>
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
-var circles = [];
+var circles0 = [];
+var circles1 = [];
+var circles2 = [];
 var gC = document.getElementById("greenCircle");
 var gCTX = gC.getContext("2d");
-var fps, fpsInterval, startTime, now, then, elapsed;
+var gFps, fpsInterval, startTime, now, then, elapsed, startFPS;
 var stopTime;
 var stop = false;
+var winPointMarked = false;
+var testWinTriggered = false;
 
 var reqID;
 gCTX.beginPath();
@@ -57,12 +62,19 @@ function init(){
 	//console.log('cool' + xC	)
 	var yC = canvas.height / 2;
 
-	drawCircle(0,0,2*Math.PI,xC,yC,0.1,220);
-	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,200);
-	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,240);
+	drawCircle(0,0,2*Math.PI,xC,yC,0.1,220,circles0);
+	drawCircle(0,0,2*Math.PI,xC,yC,0.1,200,circles1);
+	drawCircle(0,0,2*Math.PI,xC,yC,0.1,240,circles2);
 	//ctx.save();
 	startAnimating(20);
 	//window.requestAnimationFrame(draw);
+}
+
+function stopToWin()
+{
+	var testWinButton = document.getElementById('testWin');
+	testWinTriggered = true;
+	console.log('testing win circle');
 }
 
 function toggleWheel(){
@@ -72,17 +84,19 @@ function toggleWheel(){
 		reqID = requestAnimationFrame(draw);
 		stopButton.innerHTML = "STOP"
 		stopTime = null;
+		gFps = startFPS;
+		fpsInterval = 1000 / gFps;
 	}
 	else{
 		stop = true;
 		stopTime = Date.now();
-		//fpsInterval = 1000 / ;
+		//fpsInterval = 1000 / 5;
 		stopButton.innerHTML = "PLAY"
 	}
 	//cancelAnimationFrame(reqID);
 }
 //drawTheBloddoyCircle(0,0,0);
-function drawTheBloddoyCircle(x,y,colour){
+function drawTheBloddoyCircle(x,y,colour,circles){
 	var c = null;
 	for(var i = 0; i < circles.length; i++){
 		c = circles[i];
@@ -109,6 +123,8 @@ function animate(){
 
 function startAnimating(fps) {
     fpsInterval = 1000 / fps;
+    startFPS = fps;
+    gFps = fps;
     then = Date.now();
     startTime = then;
     draw();
@@ -116,8 +132,6 @@ function startAnimating(fps) {
 }
 function draw()
 {
-
-
 	reqID = window.requestAnimationFrame(draw);
 
 	//animatctx.clearRect(0, 0, 300, 300); // clear canvaseCircle(0,0);
@@ -129,39 +143,56 @@ function draw()
 	now = Date.now();
 	if(stopTime != null && now >= stopTime + 300)
 	{
-		//console.log(now); 
-		cancelAnimationFrame(reqID);
+		//console.log(now);
+		// is there a better way to slow the circle than just throttling the fps?
+		gFps-=3;
+		fpsInterval = 1000 / gFps;
+
+		stopTime = Date.now(); 
+		console.log(fpsInterval);
+		if(gFps <= 0){
+			if(circles0[circle_i].winCircle)
+			{
+				// everything... seems to be in order...
+				console.log('WIN!!!!')
+			}
+			cancelAnimationFrame(reqID);
+
+		}
+		
 	}
 	elapsed = now - then;
 	if(elapsed > fpsInterval)
 	{
 		then = now - (elapsed % fpsInterval);
 		cool.clearRect(0, 0, 600, 600); // clear canvas
-	  	//cool.fillStyle = 'rgba(0, 0, 0, 0.4)';
-	  	//cool.strokeStyle = 'rgba(0, 153, 255, 0.4)';
+
+		// 1 green circle
 	  	cool.save();
-	  	//cool.clearRect(0, 0, 1000, 900); // clear canvas
-	  	var time = new Date();
-	  	
-	  	cool.translate(circles[circle_i].x, circles[circle_i].y);
-		
-	  	// Earth
+	  	cool.translate(circles0[circle_i].x, circles0[circle_i].y);
+  		cool.drawImage(gC, -9, -9);
+  		cool.restore();
 
-	  	
-	  	//thing(cool,time);
+  		// 2 green circles
+  		cool.save();
+	  	cool.translate(circles1[circle_i].x, circles1[circle_i].y);
+  		cool.drawImage(gC, -9, -9);
+  		cool.restore();
 
-	  	//f fucking awful code
-	  	// why the hell is the formula written like this? thats such an awful way of presenting the concept, and thanks for the comments explaining it, mozilla.
-	  //	cool.rotate(((5 * Math.PI) / 60) * time.getSeconds() + ((5 * Math.PI) / 	60000) * time.getMilliseconds());	
-	  	//cool.rotate((3 * Math.PI) / 60);
-  	//cool.translate(230, 0);	
-  	//cool.fillRect(0, -12, 40, 24); // Shadow
-  	//cool.translate(0, 0);
+  		// 3 green circles!!
+  		cool.save();
+	  	cool.translate(circles2[circle_i].x, circles2[circle_i].y);
   		cool.drawImage(gC, -9, -9);
   		cool.restore();
 
   		cool.drawImage(canvas, 0,0,600,600)
-  		if(circle_i + 1 == circles.length)
+
+  		if(testWinTriggered && circles0[circle_i].winCircle)
+  		{
+  			cancelAnimationFrame(reqID);
+  		}
+
+  		if(circle_i + 1 == circles0.length)
   		{
   			circle_i = 0;
   		}
@@ -197,7 +228,7 @@ function drawWheel(startPoint, endPoint, step){
 
 } 
 
-function drawCircle(startX, startY,end, xC, yC, step, inc){
+function drawCircle(startX, startY,end, xC, yC, step, inc,circles){
 	
 	ctx.strokeStyle = "#000000"
 	for(var i = 0; i < end; i+=step){
@@ -210,19 +241,24 @@ function drawCircle(startX, startY,end, xC, yC, step, inc){
 			colour = "#00cc00"
 		//console.log("red??")
 		}
+		else if(i < Math.PI + step && i > Math.PI - step)
+		{
+			colour = "#990000"
+			winPointMarked = true;
+		}
 		else {
 			colour = "#ff0000"
 			//console.log("green???")
 		}
-		drawCircleRow(stepX + xC, stepY + yC,colour);
+		drawCircleRow(stepX + xC, stepY + yC,colour,circles);
 	}
 }
 
-function drawCircleRow(x,y,colour){
+function drawCircleRow(x,y,colour,circles){
 	ctx.beginPath();
 	ctx.arc(x,y,8,0, 2*Math.PI);
 	//console.log('step is: ' + step)
-	
+	//var subArray = [];
 	ctx.fillStyle = colour;
 	ctx.stroke();
 	ctx.fill()
@@ -230,10 +266,15 @@ function drawCircleRow(x,y,colour){
 		x: x,
 		y: y,
 		r: 8,
-		colour: colour
+		colour: colour,
+		winCircle: winPointMarked
 	};
+	if(winPointMarked){
+		winPointMarked = false;
+	}
+	//subArray.push(circle);
 	circles.push(circle);
-	//console.log(circle);
+	//console.log(subArray);
 }
 
 function animateCircle(x,y){
