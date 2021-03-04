@@ -2,7 +2,7 @@
 Simple recreation of a prize-based arcade game.
 
 If you have been directed here by me to just play the game:
-  - Download the project (click the "code" button with the down arrow), make sure the branch (option to the right)
+  - Download the project (click the "code" button with the down arrow), make sure the branch (option to the left)
       says "main". Select "Download ZIP".
   - Extract the folder to a directory of your choosing.
   - In the main folder (Whistle), open the game.html file (only tested in Firefox currently)
