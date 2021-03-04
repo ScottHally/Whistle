@@ -6,6 +6,9 @@ If you have been directed here by me to just play the game:
       says "main". Select "Download ZIP".
   - Extract the folder to a directory of your choosing.
   - In the main folder (Whistle), open the game.html file (only tested in Firefox currently)
+    - Make sure to open it in a browser. Depending on your OS double clicking the file may bring up
+      a text editor by default. If this is the case, try right clicking the file and selecting your
+      browser under "Open With"
   - Lower your volume (especially if using headphones)
     Currently there is only one sound effect, which is a mostly unedited file of a guitar riff with high gain.
     As such, the sound may be loud depending on your volume setting. Alternative is to click the mute icon in
