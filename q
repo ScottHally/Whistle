@@ -1,0 +1,55 @@
+added bootstrap, a sound effect, some ui stuff wip
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch UIChange
+# Changes to be committed:
+#	new file:   css/bootstrap-grid.css
+#	new file:   css/bootstrap-grid.css.map
+#	new file:   css/bootstrap-grid.min.css
+#	new file:   css/bootstrap-grid.min.css.map
+#	new file:   css/bootstrap-grid.rtl.css
+#	new file:   css/bootstrap-grid.rtl.css.map
+#	new file:   css/bootstrap-grid.rtl.min.css
+#	new file:   css/bootstrap-grid.rtl.min.css.map
+#	new file:   css/bootstrap-reboot.css
+#	new file:   css/bootstrap-reboot.css.map
+#	new file:   css/bootstrap-reboot.min.css
+#	new file:   css/bootstrap-reboot.min.css.map
+#	new file:   css/bootstrap-reboot.rtl.css
+#	new file:   css/bootstrap-reboot.rtl.css.map
+#	new file:   css/bootstrap-reboot.rtl.min.css
+#	new file:   css/bootstrap-reboot.rtl.min.css.map
+#	new file:   css/bootstrap-utilities.css
+#	new file:   css/bootstrap-utilities.css.map
+#	new file:   css/bootstrap-utilities.min.css
+#	new file:   css/bootstrap-utilities.min.css.map
+#	new file:   css/bootstrap-utilities.rtl.css
+#	new file:   css/bootstrap-utilities.rtl.css.map
+#	new file:   css/bootstrap-utilities.rtl.min.css
+#	new file:   css/bootstrap-utilities.rtl.min.css.map
+#	new file:   css/bootstrap.css
+#	new file:   css/bootstrap.css.map
+#	new file:   css/bootstrap.min.css
+#	new file:   css/bootstrap.min.css.map
+#	new file:   css/bootstrap.rtl.css
+#	new file:   css/bootstrap.rtl.css.map
+#	new file:   css/bootstrap.rtl.min.css
+#	new file:   css/bootstrap.rtl.min.css.map
+#	modified:   game.html
+#	new file:   js/bootstrap.bundle.js
+#	new file:   js/bootstrap.bundle.js.map
+#	new file:   js/bootstrap.bundle.min.js
+#	new file:   js/bootstrap.bundle.min.js.map
+#	new file:   js/bootstrap.esm.js
+#	new file:   js/bootstrap.esm.js.map
+#	new file:   js/bootstrap.esm.min.js
+#	new file:   js/bootstrap.esm.min.js.map
+#	new file:   js/bootstrap.js
+#	new file:   js/bootstrap.js.map
+#	new file:   js/bootstrap.min.js
+#	new file:   js/bootstrap.min.js.map
+#	new file:   locoOGG.ogg
+#	new file:   locoshorter.ogg
+#	new file:   styles.css
+#

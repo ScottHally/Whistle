@@ -2,9 +2,14 @@
 <html>
 <head>
 <meta charset="utf-8"/>
+<title>WHISTLE STOP - SIM 2021</title>
 </head>
 
 <body>
+<img id="volumeIcon" src="node_modules/bootstrap-icons/icons/volume-off-fill.svg"
+width="32" height="32" onclick="toggleAudio('off')">
+<img id="muteIcon" src="node_modules/bootstrap-icons/icons/volume-mute-fill.svg"
+width="32" height="32" onclick="toggleAudio('on')" style="display: none;">
 <audio id="gRiff" preload="auto">
 	<source src="locoshorter.ogg" type="audio/ogg">
 </audio>
@@ -81,6 +86,15 @@ var xC = canvas.width / 2;
 	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,200);
 	//drawCircle(0,0,2*Math.PI,xC,yC,0.1,250);
 	var circle_i = 0;
+	var secondCircle_i = 0;
+	var circle_i_0 = 0;
+	var circle_i_1 = 0;
+	var circle_i_2 = 0;
+	var circle_i_3 = 0;
+
+	var circlePos = [0,10,20,30,40,50,0];
+
+	const CIRCLE_GAP = 9;
 init();
 
 function init(){
@@ -94,6 +108,27 @@ function init(){
 	//ctx.save();
 	//startAnimating(20);
 	//window.requestAnimationFrame(draw);
+}
+
+function toggleAudio(option)
+{
+	var audioIcon = document.getElementById('volumeIcon');
+	var muteIcon = document.getElementById('muteIcon');
+	var gR = document.getElementById('gRiff');
+	if(option == "off")
+	{
+		audioIcon.style.display = "none";
+		muteIcon.style.display = "block";
+
+		gR.muted = true;
+	}
+	else 
+	{
+		muteIcon.style.display = "none";
+		audioIcon.style.display = "block";
+		gR.muted = false;
+	}
+	
 }
 
 function stopToWin()
@@ -190,30 +225,93 @@ function startAnimating(fps) {
 
 }
 
+function checkWin()
+{
+	var circle;
+	var winCircleHit = false;
+
+	//FUNNNNCTION!!!!
+	circlePos.fill(circle_i);
+	if(circles0[circle_i].winCircle)
+	{
+		console.log('checking first circle...');
+		console.log(circles0[circle_i]);
+		winCircleHit = true;
+	}
+	else
+	{
+		for(var i = 1; i < circlePos.length && !winCircleHit; i++)
+		{
+			circlePos[i] = circlePos[i-1] + CIRCLE_GAP;
+			circlePos[i] = checkBounds(circlePos[i]);
+			circle = circles0[circlePos[i]];
+			console.log('checking circle...');
+			console.log(circle);
+			if(circle.winCircle)
+			{
+				winCircleHit = true;
+			}
+		}
+	}
+	
+
+	return winCircleHit;
+}
+
 function update(context)
 {
+	// no no no no no!! so ugly!!
 	context.clearRect(0, 0, 600, 600); // clear canvas
+
+	drawThree(context, circle_i);
+	circlePos.fill(circle_i);
+	for(var i = 1; i < circlePos.length; i++)
+	{
+		circlePos[i] = circlePos[i-1] + CIRCLE_GAP;
+		circlePos[i] = checkBounds(circlePos[i]);
+		drawThree(context, circlePos[i]);
+	}
+
+  	context.drawImage(canvas, 0,0,600,600);
+
+}
+
+function checkBounds(i)
+{
+	var diff = -1;
+	if(i >= circles0.length)
+	{
+		diff = i - circles0.length;
+		i = diff;
+	}
+	//console.log(i);
+	return i;
+}
+
+function drawThree(context, i)
+{
+	
 
 	// 1 green circle
 	context.save();
-	context.translate(circles0[circle_i].x, circles0[circle_i].y);
+	context.translate(circles0[i].x, circles0[i].y);
   	context.drawImage(gC, -9, -9);
   	context.restore();
 
   	// 2 green circles
   	context.save();
-	context.translate(circles1[circle_i].x, circles1[circle_i].y);
+	context.translate(circles1[i].x, circles1[i].y);
   	context.drawImage(gC, -9, -9);
   	context.restore();
 
   	// 3 green circles!!
   	context.save();
-	context.translate(circles2[circle_i].x, circles2[circle_i].y);
+	context.translate(circles2[i].x, circles2[i].y);
   	context.drawImage(gC, -9, -9);
   	context.restore();
-
-  	context.drawImage(canvas, 0,0,600,600)
+  	
 }
+
 function draw()
 {
 	reqID = window.requestAnimationFrame(draw);
@@ -264,8 +362,10 @@ function draw()
 
 		//stopTime = Date.now(); 
 		//console.log(fpsInterval);
-		console.log(circles0[circle_i]);
-			if(circles0[circle_i].winCircle)
+			console.log(circles0[circle_i]);
+
+
+			if(checkWin())
 			{
 				// everything... seems to be in order...
 				//editCircleColour(circles0[circle_i], "#00cc00");
