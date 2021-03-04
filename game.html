@@ -5,23 +5,38 @@
 </head>
 
 <body>
-<audio id="gRiff">
-	<source src="loco.wav" type="audio/wav">
+<audio id="gRiff" preload="auto">
+	<source src="locoshorter.ogg" type="audio/ogg">
 </audio>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col">
 <canvas id="myCanvas" width="600" height="600"
 style="border:1px solid #00d3d3">
 Your browser does not support the canvas element.
 </canvas>
 <!-- remember to use css styles-->
-<canvas id="back" width="600" height="600"
-style="border:1px solid #00d3d3; display: none"></canvas>
+
+	<canvas id="back" width="600" height="600"
+	style="border:1px solid #00d3d3; display: none"></canvas>
+
 <canvas id="greenCircle" width="18" height="18"
 style="display: none"></canvas>
-<h1>WIN</h1>
-<button id="startGame" onclick="startAnimating(20)">PLAY WHISTLE STOP</button>
-<button id="stopButton" onclick="toggleWheel()">STOP</button>
-<button id="testWin" onclick="stopToWin()">TEST</button>
+</div>
+<div class="col-sm pt-4">
+	<div class="row justify-content">
+<p><button class="btn btn-primary" id="startGame" onclick="startAnimating(20)">PLAY WHISTLE STOP</button></p>
+<p><button style="display:none;" class="btn btn-danger" id="stopButton" onclick="toggleWheel()">STOP</button></p>
+<p><button class="btn btn-warning" id="testWin" onclick="stopToWin()">TEST</button></p>
 
+<h1 id="winMsg" style="display: none">WIN</h1>
+<h1 id="loserMsg" style="display: none">YOU ARE LOSER</h1>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="css/bootstrap.css"/>
+<link rel="stylesheet" href="styles.css"/>
 <script>
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
@@ -41,7 +56,7 @@ var stopPointMarked = false;
 var testWinTriggered = false;
 var stopTriggered = false;
 var stopAtCircle = -1;
-
+var currStopStep = -1;
 var reqID;
 gCTX.beginPath();
 gCTX.arc(9,9,8,0,2*Math.PI);
@@ -90,6 +105,11 @@ function stopToWin()
 
 function toggleWheel(){
 	var stopButton = document.getElementById('stopButton')
+	var winMsg = document.getElementById('winMsg');
+	var loserMsg = document.getElementById('loserMsg');
+
+	winMsg.style.display = "none";
+	loserMsg.style.display = "none";
 	//var gR = document.getElementById('gRiff');
 	//gR.play();
 	if(stop){
@@ -105,14 +125,20 @@ function toggleWheel(){
 	else{
 		stop = true;
 		stopTriggered = true;
+
+		stopButton.style.display = "none";
 		stopAtCircle = circle_i + 15;
+		//gFps = 15;
+		//fpsInterval = 1000 / gFps;
+		currStopStep = 0;
 		if(stopAtCircle > circles0.length)
 		{
 			var diff = stopAtCircle - circles0.length;
 			stopAtCircle = diff;
 		}
 		stopTime = Date.now();
-		//fpsInterval = 1000 / 5;
+		gFps = 15;
+		fpsInterval = 1000 / gFps;
 		stopButton.innerHTML = "PLAY"
 	}
 	//cancelAnimationFrame(reqID);
@@ -145,10 +171,16 @@ function animate(){
 
 function startAnimating(fps) {
 	var gR = document.getElementById('gRiff');
+	//gR.currentTime = 0.5;
 	var back = document.getElementById('back');
+	var start = document.getElementById('startGame');
+	var stopButton = document.getElementById('stopButton');
+	stopButton.style.display = "block";
+	start.style.display = "none";
 	canvas.style.display = "none";
 	back.style.display = "inline";
 	gR.play();
+	console.log(gR.readyState);
     fpsInterval = 1000 / fps;
     startFPS = fps;
     gFps = fps;
@@ -198,6 +230,20 @@ function draw()
 	if(elapsed > fpsInterval)
 	{
 		then = now - (elapsed % fpsInterval);
+		if(stopTriggered)
+		{
+
+			if(gFps > 5)
+			{
+
+
+				gFps -= 1;
+				fpsInterval = 1000 / gFps;
+				console.log('setting fps to: ' + gFps);
+			}
+			currStopStep++;
+			//fpsInterval *= 2;
+		}
 		
 		update(cool);
   		if(testWinTriggered && circles0[circle_i].winCircle)
@@ -256,8 +302,18 @@ function draw()
 //  		//cool.restore();
 //
   		//cool.drawImage(canvas, 0,0,600,600)
+  				var winMsg = document.getElementById('winMsg');
+  				winMsg.style.display = "block";
 				console.log('WIN!!!!')
 			}
+			else
+			{
+				var loserMsg = document.getElementById('loserMsg');
+				loserMsg.style.display = "block";
+			}
+
+			var stopBtn = document.getElementById('stopButton');
+			stopBtn.style.display = "block";
 			cancelAnimationFrame(reqID);
 
 		
